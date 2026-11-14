@@ -9,19 +9,21 @@ Updated: 2026-11-14
 - Added product README, architecture, source/rights policy and provider integration matrix.
 - Added initial PostgreSQL schema for artists, aliases, albums, genres, songs, contributors, source provenance, rights status, playlists and favorites.
 - Added Next.js + TypeScript app scaffold and an Arabic RTL responsive dashboard shell.
-- Added initial web app manifest.
+- Added initial web app manifest and SVG app icon.
+- Added provider-neutral catalog types, Arabic normalization utilities and fail-closed personal playback/broadcast policy helpers.
+- Replaced the legacy Internet Archive route on the feature branch: it now returns metadata and canonical item links only, with rights/availability unknown; it no longer guesses MP3 URLs or returns mock sample audio.
 
 ## In progress
 
 - Phase 1 source/provider due diligence.
-- Catalog model and Arabic normalization implementation.
-- Replacing the legacy Internet Archive endpoint with a fail-closed provider adapter.
+- Catalog search API and provider adapter implementation.
+- Connecting the UI to live metadata sources.
 
 ## Critical findings
 
-- The legacy backend route currently fabricates direct MP3 paths from Internet Archive identifiers and returns generic sample audio when provider calls fail. This must be removed before any production release.
 - Spotify's developer policy limits full-track streaming to Premium users, prohibits non-interactive broadcasting, restricts commercial use and prohibits integration with streams/content from other services. The product must keep playback provider-specific.
 - Jamendo's API terms include limits on commercial use, offline access and replicating its overall service experience. Do not make Jamendo a core source without written approval/legal review.
+- MusicBrainz can supply metadata, not recordings. Its public API requires a meaningful User-Agent and no more than one request per second; commercial use requires a commercial plan.
 - Internet Archive search metadata alone does not prove a recording is public domain or cleared for broadcasting.
 
 ## Not yet done
@@ -35,10 +37,10 @@ Updated: 2026-11-14
 
 ## Next engineering sequence
 
-1. Implement Arabic normalization and provider-neutral catalog types.
-2. Replace the legacy songs route with source-specific adapters that never guess media URLs or fabricate results.
-3. Implement source provenance and rights-gated playback resolution.
-4. Add catalog search/browse APIs and connect the UI.
-5. Validate the build and provider error handling.
+1. Implement provider adapters with rate limits, caching and metadata provenance.
+2. Add source-specific playback resolution and rights review workflows.
+3. Connect catalog search/browse APIs to the web UI.
+4. Add private authentication, favorites and playlists.
+5. Validate the build, provider errors, accessibility and mobile behavior.
 6. Review hosting/database configuration and costs before provisioning.
 7. Deploy a preview after the build is valid; keep production and radio transmission disabled until their respective gates pass.
