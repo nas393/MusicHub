@@ -4,6 +4,7 @@ This is an initial due-diligence matrix, not a statement that every provider has
 
 | Provider | Discovery / metadata | Playback approach | Current gate |
 |---|---|---|---|
+| MusicBrainz | Official API searches artists, recordings and releases; useful for Arabic/Latin aliases, dates and identifiers | Metadata only; not an audio host | Free API use is for non-commercial applications. Requires a meaningful User-Agent and a maximum average of one request per second. Commercial use requires a commercial plan/contact. |
 | Spotify | Official Web API can search and return artist, album and track metadata | Spotify-controlled Web Playback SDK or official embed/link, subject to account and developer restrictions | Premium is required for full streaming through the platform. No non-interactive broadcasting. Do not combine Spotify content with streams/content from another service. No commercial streaming use without written permission. |
 | Apple Music | MusicKit / Apple Music API, subject to developer program terms | MusicKit JS for the user's Apple Music subscription, rendered only through Apple's permitted APIs | No downloading, uploading or modifying MusicKit content. Playback must remain within Apple's API experience. |
 | SoundCloud | Official API / oEmbed where access is granted | Official widget/embed; custom stream only when explicitly permitted and attribution rules are met | Track can be blocked, preview-only, paywalled or geo-restricted. Do not treat every public page as streamable. |
@@ -17,6 +18,9 @@ The product can provide one search and catalog experience, but it must not promi
 
 ## Primary official references
 
+- MusicBrainz API: https://musicbrainz.org/doc/MusicBrainz_API
+- MusicBrainz search API: https://musicbrainz.org/doc/MusicBrainz_API/Search
+- MusicBrainz rate limiting: https://musicbrainz.org/doc/MusicBrainz_API/Rate_Limiting
 - Spotify Web API: https://developer.spotify.com/documentation/web-api/reference
 - Spotify Web Playback SDK: https://developer.spotify.com/documentation/web-playback-sdk
 - Spotify Developer Policy: https://developer.spotify.com/policy
