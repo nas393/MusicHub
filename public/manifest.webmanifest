@@ -1,0 +1,12 @@
+{
+  "name": "طَرَب — الأرشيف الموسيقي العربي",
+  "short_name": "طَرَب",
+  "description": "اكتشف الموسيقى العربية من مصادرها الرسمية والمرخصة.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#101116",
+  "theme_color": "#101116",
+  "icons": []
+}
