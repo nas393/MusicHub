@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#101116"/>
+  <circle cx="256" cy="256" r="184" fill="none" stroke="#c7a477" stroke-width="5"/>
+  <circle cx="256" cy="256" r="164" fill="none" stroke="#c7a477" stroke-opacity=".28" stroke-width="2"/>
+  <path d="M256 112c-72 0-116 46-116 111 0 64 44 102 116 102 39 0 70-10 94-31v-49c-22 23-50 35-84 35-40 0-65-20-65-58 0-40 26-62 67-62 27 0 52 10 75 29v-48c-23-19-53-29-87-29Z" fill="#e0c49c"/>
+  <path d="M175 360h162" stroke="#c7a477" stroke-width="5" stroke-linecap="round"/>
+  <text x="256" y="402" fill="#a9a19a" font-size="24" text-anchor="middle" font-family="Arial,sans-serif" letter-spacing="5">TARAB</text>
+</svg>
