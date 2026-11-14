@@ -17,6 +17,10 @@ type Recording = {
   rightsStatus: 'metadata_only';
 };
 
+type OfficialLink = { provider: string; url: string };
+type OfficialLinksState = { loading: boolean; error: string; links: OfficialLink[] };
+type OfficialLinksResponse = { links?: OfficialLink[]; error?: string; notice?: string };
+
 type SearchResponse = {
   results?: Recording[];
   count?: number;
@@ -41,8 +45,22 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [searched, setSearched] = useState(false);
+  const [officialLinks, setOfficialLinks] = useState<Record<string, OfficialLinksState>>({});
 
   const filteredGenres = useMemo(() => genres.filter((genre) => matchesArabicQuery(genre, query)), [query]);
+
+  async function loadOfficialLinks(recordingId: string) {
+    if (officialLinks[recordingId]?.loading || officialLinks[recordingId]?.links.length) return;
+    setOfficialLinks((current) => ({ ...current, [recordingId]: { loading: true, error: '', links: [] } }));
+    try {
+      const response = await fetch(`/api/recordings/${encodeURIComponent(recordingId)}`);
+      const payload = await response.json() as OfficialLinksResponse;
+      if (!response.ok) throw new Error(payload.error || 'تعذر تحميل روابط الاستماع.');
+      setOfficialLinks((current) => ({ ...current, [recordingId]: { loading: false, error: '', links: payload.links || [] } }));
+    } catch (err) {
+      setOfficialLinks((current) => ({ ...current, [recordingId]: { loading: false, error: err instanceof Error ? err.message : 'حدث خطأ.', links: [] } }));
+    }
+  }
 
   useEffect(() => {
     const value = query.trim();
@@ -133,10 +151,16 @@ export default function HomePage() {
                 <div className="result-disc">♫</div>
                 <div className="result-info"><strong>{recording.title}</strong><span>{recording.artists.join('، ') || 'الفنان غير مسجل'}</span><small>{recording.releaseTitle || 'الألبوم غير محدد'}{recording.releaseYear ? ` · ${recording.releaseYear}` : ''} · {formatDuration(recording.durationSeconds)}</small></div>
                 <a className="source-link" href={recording.providerUrl} target="_blank" rel="noreferrer">سجل المصدر ↗</a>
+                <button className="official-links-button" onClick={() => loadOfficialLinks(recording.id)} disabled={officialLinks[recording.id]?.loading}>{officialLinks[recording.id]?.loading ? 'جارٍ التحميل…' : 'روابط الاستماع الرسمية'}</button>
                 <span className="metadata-only">بيانات فقط</span>
+                {officialLinks[recording.id] && <div className="official-links-panel">
+                  {officialLinks[recording.id].error && <span className="official-links-error">{officialLinks[recording.id].error}</span>}
+                  {!officialLinks[recording.id].error && officialLinks[recording.id].links.length === 0 && !officialLinks[recording.id].loading && <span>لا توجد روابط استماع رسمية موثقة لهذا التسجيل في الفهرس حالياً.</span>}
+                  {officialLinks[recording.id].links.map((link) => <a key={link.url} href={link.url} target="_blank" rel="noreferrer">{link.provider} ↗</a>)}
+                </div>}
               </article>
             ))}</div>}
-            <p className="rights-note">نتائج الفهرسة لا تعني توفر ملف صوتي أو امتلاك حقوق التشغيل. روابط التشغيل الرسمية ستظهر فقط بعد ربط مزود مرخّص.</p>
+            <p className="rights-note">نتائج الفهرسة لا تعني توفر ملف صوتي أو امتلاك حقوق التشغيل. روابط الاستماع التجارية تظهر عند توفر علاقة موثقة في سجل المصدر، وتفتح صفحة المزود الرسمية.</p>
           </section>
         )}
 
