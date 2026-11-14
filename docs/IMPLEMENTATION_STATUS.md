@@ -4,43 +4,52 @@ Updated: 2026-11-14
 
 ## Completed in foundation branch
 
-- Confirmed and reused the existing nas393/MusicHub repository.
-- Created isolated branch foundation/arabic-music-archive; main was not modified.
-- Added product README, architecture, source/rights policy and provider integration matrix.
-- Added initial PostgreSQL schema for artists, aliases, albums, genres, songs, contributors, source provenance, rights status, playlists and favorites.
-- Added Next.js + TypeScript app scaffold and an Arabic RTL responsive dashboard shell.
-- Added initial web app manifest and SVG app icon.
-- Added provider-neutral catalog types, Arabic normalization utilities and fail-closed personal playback/broadcast policy helpers.
-- Replaced the legacy Internet Archive route on the feature branch: it now returns metadata and canonical item links only, with rights/availability unknown; it no longer guesses MP3 URLs or returns mock sample audio.
+- Reused existing nas393/MusicHub repository and isolated changes on foundation/arabic-music-archive; main remains untouched.
+- Added product architecture, source/rights policy and provider integration matrix.
+- Added initial PostgreSQL catalog and rights schema (not yet provisioned/applied).
+- Added Next.js + TypeScript Arabic RTL responsive app shell and PWA manifest/icon.
+- Added provider-neutral catalog types, Arabic text normalization and fail-closed playback/broadcast policy helpers.
+- Hardened the legacy Internet Archive route: metadata and canonical item links only; no guessed MP3 paths or mock audio fallback.
+- Added live MusicBrainz recording metadata search API with server-side request, User-Agent, timeout and cache policy.
+- Connected the web search field to the catalog API with debouncing, loading/error/empty states and source-record links.
+- Added responsive search-result presentation and clear metadata-only / rights-not-verified messaging.
+- Added GitHub Actions workflow for TypeScript checks and Next.js production build.
+
+## Current capability
+
+The search experience can query MusicBrainz recording metadata through the app API. It does not stream audio. Each result links to its MusicBrainz source record and is explicitly labelled metadata-only. Arabic text normalization is used for local category filtering; provider search itself uses the original query.
 
 ## In progress
 
-- Phase 1 source/provider due diligence.
-- Catalog search API and provider adapter implementation.
-- Connecting the UI to live metadata sources.
+- CI validation of the web app.
+- Provider adapter and official playback integrations.
+- Database-backed catalog, user accounts and personal library.
 
-## Critical findings
+## Provider and rights constraints
 
-- Spotify's developer policy limits full-track streaming to Premium users, prohibits non-interactive broadcasting, restricts commercial use and prohibits integration with streams/content from other services. The product must keep playback provider-specific.
-- Jamendo's API terms include limits on commercial use, offline access and replicating its overall service experience. Do not make Jamendo a core source without written approval/legal review.
-- MusicBrainz can supply metadata, not recordings. Its public API requires a meaningful User-Agent and no more than one request per second; commercial use requires a commercial plan.
-- Internet Archive search metadata alone does not prove a recording is public domain or cleared for broadcasting.
+- MusicBrainz supplies metadata, not audio. Respect API rate limits and use a descriptive User-Agent.
+- Spotify playback is provider-controlled; full playback requires the appropriate user subscription and the product cannot merge Spotify streams into a multi-service radio broadcast.
+- Jamendo's API terms need legal/permission review before it becomes a core catalog/playback provider.
+- Internet Archive item metadata is not proof of public-domain status or broadcast clearance.
+- Commercial track playback must remain on official provider links/players unless a separate license explicitly authorizes direct streaming.
+- Public radio transmission stays disabled until master recording, composition/publishing, performer/neighboring-rights and territory-specific broadcast permissions are documented.
 
 ## Not yet done
 
 - No database has been provisioned and no schema has been applied.
-- No API keys or provider accounts have been connected.
-- No production Vercel project or deployment has been created.
-- No music catalog has been imported; no tracks are represented as playable.
+- No provider API credentials/accounts are connected.
+- No commercial provider player is integrated yet.
+- No music catalog has been imported into a persistent database.
+- No authentication, favorites or playlists are connected to persistent storage.
 - No radio broadcast capability is enabled.
-- Build and device QA have not yet run; this branch has not been merged to main.
+- No production deployment has been created.
+- No build result is claimed until CI completes.
 
 ## Next engineering sequence
 
-1. Implement provider adapters with rate limits, caching and metadata provenance.
-2. Add source-specific playback resolution and rights review workflows.
-3. Connect catalog search/browse APIs to the web UI.
-4. Add private authentication, favorites and playlists.
-5. Validate the build, provider errors, accessibility and mobile behavior.
-6. Review hosting/database configuration and costs before provisioning.
-7. Deploy a preview after the build is valid; keep production and radio transmission disabled until their respective gates pass.
+1. Complete and fix CI typecheck/build.
+2. Add official provider adapters and track-level source/playback metadata.
+3. Add official provider playback/link UI, without extracting audio.
+4. Provision database only after reviewing cost, region and backups.
+5. Add authentication and personal library.
+6. Test mobile/desktop and deploy a preview.
