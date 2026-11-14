@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { matchesArabicQuery } from '@/lib/arabic-normalization';
 
 const genres = ['الطرب الأصيل', 'الأغنية اللبنانية', 'الموسيقى المصرية', 'الخليجي', 'القدود الحلبية', 'المغاربي', 'الشعبي', 'الجاز العربي'];
 const decades = ['الخمسينيات', 'الستينيات', 'السبعينيات', 'الثمانينيات', 'التسعينيات', '2000–2010', '2010–اليوم'];
@@ -10,7 +11,7 @@ export default function HomePage() {
   const [activeGenre, setActiveGenre] = useState('الكل');
   const [activeDecade, setActiveDecade] = useState('');
   const [section, setSection] = useState('الرئيسية');
-  const filteredGenres = useMemo(() => genres.filter((genre) => genre.includes(query.trim())), [query]);
+  const filteredGenres = useMemo(() => genres.filter((genre) => matchesArabicQuery(genre, query)), [query]);
 
   return (
     <main className="app-shell">
@@ -49,15 +50,19 @@ export default function HomePage() {
               <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="ابحث عن أغنية، مطرب، ألبوم أو سنة..." aria-label="البحث في الأرشيف" />
               <kbd>بحث</kbd>
             </div>
-            {query && <div className="search-hint">مطابقة أولية للتصنيفات: {filteredGenres.length} — سيُفعّل البحث الشامل بعد ربط مصادر البيانات.</div>}
+            {query && <div className="search-hint">مطابقة التصنيفات: {filteredGenres.length} — البحث الشامل سيتفعّل بعد ربط مصادر البيانات.</div>}
           </div>
           <div className="hero-art" aria-hidden="true"><div className="vinyl"><div className="vinyl-center"><span>طَرَب</span><small>صوت الذاكرة</small></div></div><div className="art-caption">صوتٌ يعبر الزمن <span>— منذ البدايات</span></div></div>
         </section>
 
         <section className="section-block">
-          <div className="section-heading"><div><span className="section-kicker">تصفّح حسب الإحساس</span><h2>الأنواع الموسيقية</h2></div><span className="muted-count">تصنيفات الأرشيف</span></div>
+          <div className="section-heading"><div><span className="section-kicker">تصفّح حسب الإحساس</span><h2>الأنواع الموسيقية</h2></div><span className="muted-count">{filteredGenres.length} تصنيفات</span></div>
           <div className="genre-grid">
-            {genres.map((genre, index) => <button key={genre} onClick={() => setActiveGenre(genre)} className={activeGenre === genre ? 'genre-card selected' : 'genre-card'}><span className={`genre-art art-${index + 1}`}><i>{['♬','♫','♩','♭','♪','♮','♬','♩'][index]}</i></span><strong>{genre}</strong><small>استكشف اللون الموسيقي</small></button>)}
+            {filteredGenres.map((genre) => {
+              const index = genres.indexOf(genre);
+              return <button key={genre} onClick={() => setActiveGenre(genre)} className={activeGenre === genre ? 'genre-card selected' : 'genre-card'}><span className={`genre-art art-${index + 1}`}><i>{['♬','♫','♩','♭','♪','♮','♬','♩'][index]}</i></span><strong>{genre}</strong><small>استكشف اللون الموسيقي</small></button>;
+            })}
+            {filteredGenres.length === 0 && <p className="empty-filter">لا توجد تصنيفات مطابقة. جرّب كتابة الاسم بالعربية أو اختصر البحث.</p>}
           </div>
         </section>
 
