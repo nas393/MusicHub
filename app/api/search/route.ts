@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { musicBrainzFetch } from '@/lib/musicbrainz-client';
 
 export const runtime = 'nodejs';
 export const revalidate = 3600;
@@ -36,7 +37,7 @@ export async function GET(request: NextRequest) {
   });
 
   try {
-    const response = await fetch(`${MUSICBRAINZ_ENDPOINT}?${params.toString()}`, {
+    const response = await musicBrainzFetch(`${MUSICBRAINZ_ENDPOINT}?${params.toString()}`, {
       headers: {
         Accept: 'application/json',
         'User-Agent': 'TarabArabicArchive/0.1.0 (https://github.com/nas393/MusicHub)',
